@@ -1,0 +1,398 @@
+<title>Wistron PM Chinese</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: a field handbook — seal-stamp header, tab strip, dense scannable rows; hanzi large, pinyin + English stacked beside */
+:root{
+  --bg:#F2F4F1; --surface:#FFFFFF; --ink:#18262A; --muted:#5B686A; --line:#D6DCD8;
+  --seal:#B8322A; --seal-soft:#F6E3E0; --teal:#1E6B66; --teal-soft:#E0EFEC; --good:#2E7D4F; --bad:#B8322A;
+  --f-han:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-lat:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111718; --surface:#192123; --ink:#E4EAE7; --muted:#95A3A2; --line:#2C3739;
+  --seal:#E0564C; --seal-soft:#3A2220; --teal:#5DBDB3; --teal-soft:#1B3331; --good:#5FC08A; --bad:#E0564C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111718; --surface:#192123; --ink:#E4EAE7; --muted:#95A3A2; --line:#2C3739;
+  --seal:#E0564C; --seal-soft:#3A2220; --teal:#5DBDB3; --teal-soft:#1B3331; --good:#5FC08A; --bad:#E0564C; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:920px;margin:0 auto;padding-inline:16px;padding-block:24px 64px}
+header{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.seal{flex:none;width:64px;height:64px;border:2.5px solid var(--seal);color:var(--seal);border-radius:6px;display:grid;grid-template-columns:1fr 1fr;place-items:center;font-family:var(--f-han);font-weight:700;font-size:22px;line-height:1;padding:6px;transform:rotate(-4deg)}
+.head-text{flex:1;min-width:0}
+h1{font-family:var(--f-han);font-size:clamp(26px,5vw,34px);margin:0;line-height:1.2;text-wrap:balance}
+h1 span{font-family:var(--f-lat);font-weight:500;font-size:.55em;color:var(--muted);display:block;margin-top:4px;letter-spacing:.01em}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tag{font-family:var(--f-lat);font-size:12px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.tag b{color:var(--ink);font-family:var(--f-body);font-weight:500}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-top:22px;border-bottom:1px solid var(--line);display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav button{font:inherit;background:none;border:0;border-bottom:2.5px solid transparent;color:var(--muted);padding:10px 12px 9px;cursor:pointer;white-space:nowrap;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+nav button .zh{font-weight:500;font-size:15px}
+nav button .en{font-family:var(--f-lat);font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--seal)}
+button:focus-visible,.chip:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+section{padding-top:20px}
+.lede{color:var(--muted);max-width:65ch;margin:0 0 16px;font-family:var(--f-lat)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.chip{font-family:var(--f-body);font-size:13px;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.spacer{flex:1}
+.toggle{font-family:var(--f-lat);font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+
+.list{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.row{display:grid;grid-template-columns:minmax(0,8.5em) minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.han{font-family:var(--f-han);font-weight:600;font-size:22px;line-height:1.25;overflow-wrap:anywhere}
+.py{font-family:var(--f-lat);color:var(--teal);font-size:14px}
+.en{font-family:var(--f-lat);font-size:14px}
+.note{font-family:var(--f-lat);font-size:12.5px;color:var(--muted);margin-top:2px}
+.hide-py .py,.hide-en .en-hideable{visibility:hidden}
+.hide-py .row:hover .py,.hide-en .row:hover .en-hideable,.row.peek .py,.row.peek .en-hideable{visibility:visible}
+.acts{display:flex;gap:4px}
+.icon-btn{font:inherit;background:none;border:1px solid transparent;border-radius:6px;width:34px;height:34px;display:grid;place-items:center;color:var(--muted);cursor:pointer}
+.icon-btn:hover{border-color:var(--line);color:var(--ink)}
+.icon-btn.on{color:var(--seal)}
+.icon-btn svg{width:18px;height:18px}
+.count{font-family:var(--f-lat);font-size:12.5px;color:var(--muted)}
+
+.phr{padding:14px;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start}
+.phr:first-child{border-top:0}
+.phr .han{font-size:19px}
+h2{font-family:var(--f-han);font-size:21px;margin:26px 0 4px}
+h2 small{font-family:var(--f-lat);font-weight:400;font-size:13px;color:var(--muted);margin-left:8px}
+h2:first-child{margin-top:4px}
+
+.duty{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:12px}
+.duty-n{font-family:var(--f-lat);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--seal);font-weight:600}
+.duty .han{font-size:20px;margin:4px 0}
+.duty .en{color:var(--muted);margin-bottom:10px}
+.gloss{display:flex;flex-wrap:wrap;gap:6px}
+.gloss span{background:var(--teal-soft);border-radius:6px;padding:3px 8px;font-size:13px}
+.gloss span i{font-family:var(--f-lat);font-style:normal;color:var(--muted);margin-left:5px;font-size:12px}
+
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.tip{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.tip h3{margin:0 0 6px;font-size:16px;font-family:var(--f-lat);font-weight:600}
+.tip p{margin:0 0 8px;font-family:var(--f-lat);font-size:14px;color:var(--muted)}
+.tip .ex{font-size:14.5px;background:var(--bg);border-radius:6px;padding:8px 10px;margin-top:6px}
+.tip .ex .py{font-size:12.5px;display:block}
+
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;max-width:600px}
+.q-top{display:flex;justify-content:space-between;align-items:center;font-family:var(--f-lat);font-size:13px;color:var(--muted);gap:8px;flex-wrap:wrap}
+.score{font-variant-numeric:tabular-nums}
+.prompt{text-align:center;padding:26px 0 18px}
+.prompt .han{font-size:40px}
+.prompt .en{font-size:20px;font-weight:500}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:11px 14px;cursor:pointer;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--teal)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:var(--seal-soft)}
+.opt .han{font-size:19px}
+.fb{min-height:48px;margin-top:12px;font-family:var(--f-lat);font-size:14px}
+.primary{font:inherit;font-family:var(--f-lat);font-weight:600;background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:10px 18px;cursor:pointer}
+.mode{display:flex;gap:6px;flex-wrap:wrap}
+
+@media (max-width:560px){
+  .row{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}
+  .row .han{grid-column:1}
+  .row .gl{grid-column:1}
+  .row .acts{grid-column:2;grid-row:1 / span 2}
+  .prompt .han{font-size:34px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="seal" aria-hidden="true"><span>產</span><span>品</span><span>管</span><span>理</span></div>
+    <div class="head-text">
+      <h1>產品管理師的職場中文<span>Workplace Chinese for your Wistron PM role</span></h1>
+      <div class="meta">
+        <span class="tag">職稱 <b>產品管理師</b></span>
+        <span class="tag">Traditional Chinese · Taiwan usage</span>
+      </div>
+    </div>
+  </header>
+
+  <nav role="tablist" aria-label="Sections">
+    <button role="tab" id="t-vocab" aria-selected="true" data-tab="vocab"><span class="zh">詞彙</span><span class="en">Vocab</span></button>
+    <button role="tab" id="t-phr" aria-selected="false" data-tab="phr"><span class="zh">句型</span><span class="en">Phrases</span></button>
+    <button role="tab" id="t-role" aria-selected="false" data-tab="role"><span class="zh">職務內容</span><span class="en">Your role</span></button>
+    <button role="tab" id="t-quiz" aria-selected="false" data-tab="quiz"><span class="zh">測驗</span><span class="en">Quiz</span></button>
+    <button role="tab" id="t-tips" aria-selected="false" data-tab="tips"><span class="zh">職場提示</span><span class="en">Tips</span></button>
+  </nav>
+
+  <!-- VOCAB -->
+  <section id="p-vocab" role="tabpanel">
+    <p class="lede">Terms you'll hear in product meetings, Teams chats and emails. Hide pinyin or English to test yourself; tap a row to peek. Star the ones you want in the quiz.</p>
+    <div class="toolbar" id="cats"></div>
+    <div class="toolbar">
+      <label class="toggle"><input type="checkbox" id="hidePy"> Hide pinyin</label>
+      <label class="toggle"><input type="checkbox" id="hideEn"> Hide English</label>
+      <label class="toggle"><input type="checkbox" id="onlyStar"> Starred only</label>
+      <span class="spacer"></span><span class="count" id="vcount"></span>
+    </div>
+    <div class="list" id="vlist"></div>
+  </section>
+
+  <!-- PHRASES -->
+  <section id="p-phr" role="tabpanel" hidden>
+    <p class="lede">Full sentences you can use as-is. Taiwan offices mix polite set phrases with plenty of English acronyms, so these are written the way colleagues actually say them.</p>
+    <div id="phrases"></div>
+  </section>
+
+  <!-- ROLE -->
+  <section id="p-role" role="tabpanel" hidden>
+    <p class="lede">The four duties from a Wistron product manager job description, broken down word by word. Read each line aloud until you can explain your job in Chinese.</p>
+    <div id="duties"></div>
+    <h2>Self-introduction<small>for your first team meeting</small></h2>
+    <div class="list" id="intro"></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="p-quiz" role="tabpanel" hidden>
+    <div class="toolbar">
+      <div class="mode" id="qmode">
+        <button class="chip" aria-pressed="true" data-m="zh2en">中 → English</button>
+        <button class="chip" aria-pressed="false" data-m="en2zh">English → 中</button>
+        <button class="chip" aria-pressed="false" data-m="py">中 → pinyin</button>
+      </div>
+      <span class="spacer"></span>
+      <label class="toggle"><input type="checkbox" id="qStar"> Starred only</label>
+    </div>
+    <div class="quiz">
+      <div class="q-top"><span id="qcat"></span><span class="score" id="qscore">0 / 0</span></div>
+      <div class="prompt" id="qprompt"></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb" aria-live="polite"></div>
+      <button class="primary" id="qnext">Next question</button>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section id="p-tips" role="tabpanel" hidden>
+    <div class="tips" id="tipgrid"></div>
+  </section>
+</div>
+
+<script>
+const V = [
+ // 組織與職位
+ ["org","產品管理師","chǎnpǐn guǎnlǐ shī","Product manager","The job title for a PM"],
+ ["org","產品管理部","chǎnpǐn guǎnlǐ bù","Product Management Dept.","產品管理二部 = PM Dept. 2"],
+ ["org","事業群","shìyè qún","Business group (BG)","Large divisions are usually called BGs"],
+ ["org","主管","zhǔguǎn","Supervisor / your manager","直屬主管 = direct manager"],
+ ["org","處長","chùzhǎng","Division head",""],
+ ["org","協理","xiélǐ","Assistant VP / senior director",""],
+ ["org","研發","yánfā","R&D","Usually just said as \"RD\""],
+ ["org","業務","yèwù","Sales / account manager","Owns the customer relationship"],
+ ["org","採購","cǎigòu","Procurement / purchasing",""],
+ ["org","品保","pǐnbǎo","Quality assurance (QA)","品質保證 in full"],
+ ["org","同仁","tóngrén","Colleague (formal)","HR letters address you as 同仁"],
+ ["org","報到","bàodào","Report for duty / first day","報到日期 = start date"],
+ ["org","職等","zhíděng","Job grade","Grade level on an offer letter"],
+ ["org","專案","zhuān'àn","Project","Taiwan word; mainland says 项目"],
+ // 產品開發
+ ["dev","開發進度","kāifā jìndù","Development progress",""],
+ ["dev","時程","shíchéng","Schedule / timeline","時程表 = schedule sheet"],
+ ["dev","里程碑","lǐchéngbēi","Milestone",""],
+ ["dev","規格","guīgé","Specification (spec)","規格書 = spec document"],
+ ["dev","需求","xūqiú","Requirement / demand","客戶需求 = customer requirement"],
+ ["dev","優先順序","yōuxiān shùnxù","Priority order","排優先順序 = to prioritize"],
+ ["dev","迭代","diédài","Iteration","功能迭代 = feature iteration"],
+ ["dev","功能","gōngnéng","Feature / function",""],
+ ["dev","試產","shìchǎn","Trial production / pilot run",""],
+ ["dev","量產","liàngchǎn","Mass production (MP)",""],
+ ["dev","樣品","yàngpǐn","Sample","送樣 = send samples"],
+ ["dev","驗證","yànzhèng","Validation / verification","EVT, DVT, PVT stages"],
+ ["dev","伺服器","sìfúqì","Server","Taiwan word; mainland says 服务器"],
+ ["dev","機櫃","jīguì","Server rack / cabinet",""],
+ ["dev","主機板","zhǔjībǎn","Motherboard","Often just \"MB\" or \"board\""],
+ ["dev","散熱","sànrè","Thermal / heat dissipation","A big topic for servers"],
+ // 成本與品質
+ ["cost","預算","yùsuàn","Budget",""],
+ ["cost","成本","chéngběn","Cost","降低成本 = cut cost"],
+ ["cost","報價","bàojià","Quotation / quote",""],
+ ["cost","利潤","lìrùn","Profit",""],
+ ["cost","毛利","máolì","Gross margin",""],
+ ["cost","物料清單","wùliào qīngdān","Bill of materials","Everyone just says \"BOM\""],
+ ["cost","交期","jiāoqí","Lead time / delivery date",""],
+ ["cost","出貨","chūhuò","Shipment / to ship",""],
+ ["cost","良率","liánglǜ","Yield rate",""],
+ ["cost","不良","bùliáng","Defect / defective","不良率 = defect rate"],
+ ["cost","缺料","quēliào","Material shortage",""],
+ ["cost","延遲","yánchí","Delay","People also just say \"delay\""],
+ ["cost","風險","fēngxiǎn","Risk","風險評估 = risk assessment"],
+ ["cost","效能","xiàonéng","Performance","Taiwan usage for product performance"],
+ // 跨部門溝通
+ ["comm","跨部門","kuà bùmén","Cross-department",""],
+ ["comm","窗口","chuāngkǒu","Point of contact","Very Taiwan: \"誰是窗口？\" = who's the contact?"],
+ ["comm","跟催","gēncuī","To chase / follow up","Politely pushing someone for a result"],
+ ["comm","確認","quèrèn","To confirm",""],
+ ["comm","回覆","huífù","To reply",""],
+ ["comm","同步","tóngbù","To sync (share info)","跟大家同步一下 = quick update to all"],
+ ["comm","對齊","duìqí","To align",""],
+ ["comm","協調","xiétiáo","To coordinate",""],
+ ["comm","會議記錄","huìyì jìlù","Meeting minutes","Often shortened to 會記"],
+ ["comm","待辦事項","dàibàn shìxiàng","Action items / to-dos","Also \"AI\" or \"action item\""],
+ ["comm","簽核","qiānhé","Approval / sign-off","送簽核 = send for approval"],
+ ["comm","客戶","kèhù","Customer / client",""],
+ ["comm","回饋","huíkuì","Feedback",""],
+ ["comm","結案","jié'àn","Close a case / issue",""],
+];
+const CATS = {all:["全部","All"],org:["組織","Org & roles"],dev:["開發","Development"],cost:["成本品質","Cost & quality"],comm:["溝通","Communication"]};
+
+const P = [
+ ["會議中","In meetings",[
+  ["我先跟大家報告一下目前的進度。","Wǒ xiān gēn dàjiā bàogào yíxià mùqián de jìndù.","Let me first update everyone on current progress."],
+  ["這個專案目前卡在哪裡？","Zhège zhuān'àn mùqián kǎ zài nǎlǐ?","Where is this project stuck right now?"],
+  ["預計什麼時候可以完成？","Yùjì shénme shíhòu kěyǐ wánchéng?","When is it expected to be done?"],
+  ["這個需求的優先順序比較高，我們先處理。","Zhège xūqiú de yōuxiān shùnxù bǐjiào gāo, wǒmen xiān chǔlǐ.","This requirement is higher priority, so we'll handle it first."],
+  ["如果時程延遲，會影響出貨。","Rúguǒ shíchéng yánchí, huì yǐngxiǎng chūhuò.","If the schedule slips, it will affect shipment."],
+  ["我們需要跟客戶再確認一下規格。","Wǒmen xūyào gēn kèhù zài quèrèn yíxià guīgé.","We need to reconfirm the spec with the customer."],
+  ["請問這部分由誰負責？","Qǐngwèn zhè bùfèn yóu shéi fùzé?","Who is responsible for this part?"],
+  ["會後我再整理會議記錄寄給大家。","Huì hòu wǒ zài zhěnglǐ huìyì jìlù jì gěi dàjiā.","After the meeting I'll send everyone the minutes."],
+ ]],
+ ["郵件與訊息","Email & Teams",[
+  ["想跟您確認一下，……","Xiǎng gēn nín quèrèn yíxià, ……","I'd like to confirm with you that…"],
+  ["附件為最新版的時程表，請參考。","Fùjiàn wéi zuìxīn bǎn de shíchéng biǎo, qǐng cānkǎo.","Attached is the latest schedule for your reference."],
+  ["再麻煩您週五前回覆，謝謝。","Zài máfán nín zhōuwǔ qián huífù, xièxie.","Please reply by Friday, thank you."],
+  ["麻煩協助確認，感謝！","Máfán xiézhù quèrèn, gǎnxiè!","Could you please help confirm? Thanks!"],
+  ["跟您跟催一下這件事的進度。","Gēn nín gēncuī yíxià zhè jiàn shì de jìndù.","Just following up on the progress of this."],
+  ["以上，如有問題請隨時告知。","Yǐshàng, rú yǒu wèntí qǐng suíshí gàozhī.","That's all. Let me know anytime if there are questions."],
+ ]],
+ ["日常與人際","Everyday & people",[
+  ["辛苦了！","Xīnkǔ le!","Thanks for your hard work! (said all the time)"],
+  ["不好意思，打擾一下。","Bù hǎoyìsi, dǎrǎo yíxià.","Sorry to bother you for a moment."],
+  ["我理解的意思是……，對嗎？","Wǒ lǐjiě de yìsi shì ……, duì ma?","What I understand is…, is that right?"],
+  ["不好意思，可以請您說慢一點嗎？","Bù hǎoyìsi, kěyǐ qǐng nín shuō màn yìdiǎn ma?","Sorry, could you speak a bit slower?"],
+  ["我先記下來，晚點回覆您。","Wǒ xiān jì xiàlái, wǎndiǎn huífù nín.","Let me note that down and get back to you later."],
+  ["這部分我可以用英文補充說明嗎？","Zhè bùfèn wǒ kěyǐ yòng Yīngwén bǔchōng shuōmíng ma?","May I explain this part in English?"],
+ ]],
+];
+
+const D = [
+ ["規畫及監督產品開發的進度","Plan and monitor the progress of product development.",[["規畫","guīhuà · plan"],["監督","jiāndū · supervise"],["開發","kāifā · develop"],["進度","jìndù · progress"]]],
+ ["排序產品需求優先級（Prioritize），主導負責一個產品的功能迭代","Rank product requirements by priority and lead feature iterations for one product.",[["排序","páixù · rank"],["需求","xūqiú · requirement"],["優先級","yōuxiān jí · priority level"],["主導","zhǔdǎo · lead"],["迭代","diédài · iteration"]]],
+ ["在預定的預算、成本與時程達成預設的產品效能、品質與利潤","Hit the planned performance, quality and profit within the set budget, cost and schedule.",[["預定","yùdìng · pre-set"],["預算","yùsuàn · budget"],["達成","dáchéng · achieve"],["效能","xiàonéng · performance"],["利潤","lìrùn · profit"]]],
+ ["理解跨部門運作，與需求單位確保產品功能有達到商業目標與需求","Understand how departments work together, and make sure with the requesting units that features meet business goals and needs.",[["跨部門","kuà bùmén · cross-dept"],["運作","yùnzuò · operation"],["需求單位","xūqiú dānwèi · requesting unit"],["確保","quèbǎo · ensure"],["商業目標","shāngyè mùbiāo · business goal"]]],
+];
+const INTRO = [
+ ["大家好，我是新來的產品管理師，我叫○○，大家可以叫我 ○○。","Dàjiā hǎo, wǒ shì xīn lái de chǎnpǐn guǎnlǐ shī, wǒ jiào ○○, dàjiā kěyǐ jiào wǒ ○○.","Hi everyone, I'm the new product manager, [name] — you can call me [nickname]."],
+ ["我之前在電子製造業做過品質和專案管理。","Wǒ zhīqián zài diànzǐ zhìzàoyè zuò guò pǐnzhí hé zhuān'àn guǎnlǐ.","I previously worked in quality and project management in electronics manufacturing."],
+ ["我的中文還在進步中，如果有說不清楚的地方，請多包涵。","Wǒ de Zhōngwén hái zài jìnbù zhōng, rúguǒ yǒu shuō bù qīngchǔ de dìfāng, qǐng duō bāohán.","My Chinese is still improving, so please bear with me if anything's unclear."],
+ ["很高興加入團隊，請多多指教！","Hěn gāoxìng jiārù tuánduì, qǐng duōduō zhǐjiào!","Happy to join the team — I look forward to learning from you all!"],
+];
+const TIPS = [
+ ["English acronyms are normal","Taiwan tech offices mix English into Chinese constantly. You'll hear stage names and short verbs in English inside Chinese sentences.","這顆 DVT 的 schedule 有 delay 嗎？","Zhè kē DVT de schedule yǒu delay ma?"],
+ ["Soften requests with 麻煩","麻煩 (máfán) turns a request into a polite favor. It opens most emails and Teams messages that ask for something.","麻煩幫我看一下這份 BOM。","Máfán bāng wǒ kàn yíxià zhè fèn BOM."],
+ ["一下 makes things lighter","Adding 一下 after a verb makes a request sound quick and casual instead of demanding.","我確認一下再跟你說。","Wǒ quèrèn yíxià zài gēn nǐ shuō."],
+ ["Check your understanding out loud","Paraphrasing back is expected of a PM, and it covers gaps in your listening. Use it after every decision in a meeting.","所以結論是先出樣品，對嗎？","Suǒyǐ jiélùn shì xiān chū yàngpǐn, duì ma?"],
+ ["Traditional vs Simplified","Taiwan writes Traditional (繁體). Colleagues at plants in mainland China may send Simplified (简体). Most words match; a few differ, like 專案 / 项目 and 伺服器 / 服务器.","伺服器 = 服务器 · 專案 = 项目","sìfúqì · zhuān'àn / xiàngmù"],
+ ["辛苦了 is everywhere","Said when someone finishes a task, leaves for the day, or presents. It's the easiest way to build goodwill with the factory and RD teams.","今天的測試辛苦了！","Jīntiān de cèshì xīnkǔ le!"],
+];
+
+// storage helpers
+const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let stars = new Set(store.get("wpm-stars",[]));
+const saveStars = ()=>store.set("wpm-stars",[...stars]);
+
+// speech
+const zhVoice = ()=>{try{const vs=speechSynthesis.getVoices();return vs.find(v=>/zh[-_]TW/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang))}catch(e){return null}};
+const canSpeak = "speechSynthesis" in window;
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/……/g,""));u.lang="zh-TW";const v=zhVoice();if(v)u.voice=v;u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+const ICON_SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const ICON_STAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>';
+const ICON_STAR_ON=ICON_STAR.replace('fill="none"','fill="currentColor"');
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const spkBtn=t=>canSpeak?`<button class="icon-btn" data-say="${esc(t)}" aria-label="Play pronunciation">${ICON_SPK}</button>`:"";
+
+// tabs
+const tabs=[...document.querySelectorAll("nav button")];
+function show(id){tabs.forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===id));document.querySelectorAll("section").forEach(s=>s.hidden=s.id!=="p-"+id);store.set("wpm-tab",id)}
+tabs.forEach(b=>b.onclick=()=>show(b.dataset.tab));
+
+// vocab
+let cat="all";
+const catBar=document.getElementById("cats");
+catBar.innerHTML=Object.entries(CATS).map(([k,[z,e]])=>`<button class="chip" data-c="${k}" aria-pressed="${k==="all"}">${z} <span style="font-family:var(--f-lat);opacity:.7;font-size:12px">${e}</span></button>`).join("");
+catBar.onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;cat=b.dataset.c;catBar.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));renderV()};
+const vlist=document.getElementById("vlist");
+function renderV(){
+  const only=document.getElementById("onlyStar").checked;
+  const items=V.filter(v=>(cat==="all"||v[0]===cat)&&(!only||stars.has(v[1])));
+  document.getElementById("vcount").textContent=`${items.length} terms · ${stars.size} starred`;
+  vlist.innerHTML=items.length?items.map(v=>`<div class="row" data-w="${esc(v[1])}">
+    <div class="han">${v[1]}</div>
+    <div class="gl"><div class="py">${v[2]}</div><div class="en en-hideable">${v[3]}</div>${v[4]?`<div class="note en-hideable">${v[4]}</div>`:""}</div>
+    <div class="acts">${spkBtn(v[1])}<button class="icon-btn star ${stars.has(v[1])?"on":""}" data-star="${esc(v[1])}" aria-label="Star ${esc(v[3])}" aria-pressed="${stars.has(v[1])}">${stars.has(v[1])?ICON_STAR_ON:ICON_STAR}</button></div>
+  </div>`).join(""):`<div class="row"><div class="gl" style="grid-column:1/-1;color:var(--muted);font-family:var(--f-lat)">No starred terms here yet. Tap the star on any row to save it.</div></div>`;
+}
+vlist.onclick=e=>{
+  const s=e.target.closest("[data-star]");
+  if(s){const w=s.dataset.star;stars.has(w)?stars.delete(w):stars.add(w);saveStars();renderV();return}
+  if(e.target.closest("[data-say]"))return;
+  const r=e.target.closest(".row");if(r)r.classList.toggle("peek");
+};
+document.getElementById("onlyStar").onchange=renderV;
+const hp=document.getElementById("hidePy"),he=document.getElementById("hideEn");
+hp.onchange=()=>vlist.classList.toggle("hide-py",hp.checked);
+he.onchange=()=>vlist.classList.toggle("hide-en",he.checked);
+renderV();
+
+// phrases
+const phrRow=p=>`<div class="phr"><div style="min-width:0"><div class="han">${p[0]}</div><div class="py">${p[1]}</div><div class="en">${p[2]}</div></div><div class="acts">${spkBtn(p[0])}</div></div>`;
+document.getElementById("phrases").innerHTML=P.map(([z,e,rows])=>`<h2>${z}<small>${e}</small></h2><div class="list">${rows.map(phrRow).join("")}</div>`).join("");
+
+// role
+document.getElementById("duties").innerHTML=D.map((d,i)=>`<div class="duty"><div class="duty-n">Duty ${i+1} of 4</div>
+  <div style="display:flex;gap:8px;align-items:flex-start"><div class="han" style="flex:1;min-width:0">${d[0]}</div>${spkBtn(d[0])}</div>
+  <div class="en">${d[1]}</div><div class="gloss">${d[2].map(g=>`<span>${g[0]}<i>${g[1]}</i></span>`).join("")}</div></div>`).join("");
+document.getElementById("intro").innerHTML=INTRO.map(phrRow).join("");
+
+// tips
+document.getElementById("tipgrid").innerHTML=TIPS.map(t=>`<div class="tip"><h3>${t[0]}</h3><p>${t[1]}</p><div class="ex"><span class="han" style="font-size:17px">${t[2]}</span><span class="py">${t[3]}</span></div></div>`).join("");
+
+// speak delegation
+document.addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(b)speak(b.dataset.say)});
+if(canSpeak){try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}catch(e){}}
+
+// quiz
+let mode="zh2en",right=0,total=0,cur=null,answered=false;
+const qm=document.getElementById("qmode");
+qm.onclick=e=>{const b=e.target.closest("[data-m]");if(!b)return;mode=b.dataset.m;qm.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));nextQ()};
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function pool(){const s=document.getElementById("qStar").checked?V.filter(v=>stars.has(v[1])):V;return s.length>=4?s:V}
+function nextQ(){
+  const p=pool();cur=p[Math.floor(Math.random()*p.length)];answered=false;
+  const others=shuffle(V.filter(v=>v!==cur)).slice(0,3);
+  const opts=shuffle([cur,...others]);
+  document.getElementById("qcat").textContent=CATS[cur[0]][1];
+  const pr=document.getElementById("qprompt");
+  pr.innerHTML=mode==="en2zh"?`<div class="en">${cur[3]}</div>`:`<div class="han">${cur[1]}</div>`;
+  const label=v=>mode==="zh2en"?`<span class="en">${v[3]}</span>`:mode==="py"?`<span class="py" style="font-size:16px">${v[2]}</span>`:`<span class="han">${v[1]}</span>`;
+  document.getElementById("qopts").innerHTML=opts.map((v,i)=>`<button class="opt" data-i="${V.indexOf(v)}">${label(v)}</button>`).join("");
+  document.getElementById("qfb").innerHTML="";
+}
+document.getElementById("qopts").onclick=e=>{
+  const b=e.target.closest(".opt");if(!b||answered)return;answered=true;total++;
+  const pick=V[+b.dataset.i],ok=pick===cur;if(ok)right++;
+  document.querySelectorAll(".opt").forEach(o=>{o.disabled=true;if(V[+o.dataset.i]===cur)o.classList.add("right")});
+  if(!ok)b.classList.add("wrong");
+  document.getElementById("qscore").textContent=`${right} / ${total}`;
+  document.getElementById("qfb").innerHTML=`<b style="color:${ok?"var(--good)":"var(--bad)"}">${ok?"Correct.":"Not this one."}</b> <span class="han" style="font-size:17px">${cur[1]}</span> <span class="py">${cur[2]}</span> · ${cur[3]}`;
+  if(canSpeak)speak(cur[1]);
+};
+document.getElementById("qnext").onclick=nextQ;
+document.getElementById("qStar").onchange=nextQ;
+nextQ();
+
+show(store.get("wpm-tab","vocab"));
+</script>
