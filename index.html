@@ -99,6 +99,9 @@ h2:first-child{margin-top:4px}
 .primary{font:inherit;font-family:var(--f-lat);font-weight:600;background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:10px 18px;cursor:pointer}
 .mode{display:flex;gap:6px;flex-wrap:wrap}
 
+.mixw{font-family:var(--f-lat);font-size:12.5px;color:var(--muted);margin-bottom:2px}
+.mixw b{color:var(--seal);font-weight:600}
+.mixen{font-family:var(--f-lat);font-weight:600;color:var(--seal);font-size:.85em;margin:0 .15em}
 @media (max-width:560px){
   .row{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}
   .row .han{grid-column:1}
@@ -124,6 +127,7 @@ h2:first-child{margin-top:4px}
   <nav role="tablist" aria-label="Sections">
     <button role="tab" id="t-vocab" aria-selected="true" data-tab="vocab"><span class="zh">詞彙</span><span class="en">Vocab</span></button>
     <button role="tab" id="t-phr" aria-selected="false" data-tab="phr"><span class="zh">句型</span><span class="en">Phrases</span></button>
+    <button role="tab" id="t-mix" aria-selected="false" data-tab="mix"><span class="zh">中英夾雜</span><span class="en">Mixed</span></button>
     <button role="tab" id="t-role" aria-selected="false" data-tab="role"><span class="zh">職務內容</span><span class="en">Your role</span></button>
     <button role="tab" id="t-quiz" aria-selected="false" data-tab="quiz"><span class="zh">測驗</span><span class="en">Quiz</span></button>
     <button role="tab" id="t-tips" aria-selected="false" data-tab="tips"><span class="zh">職場提示</span><span class="en">Tips</span></button>
@@ -131,7 +135,7 @@ h2:first-child{margin-top:4px}
 
   <!-- VOCAB -->
   <section id="p-vocab" role="tabpanel">
-    <p class="lede">Terms you'll hear in product meetings, Teams chats and emails. Hide pinyin or English to test yourself; tap a row to peek. Star the ones you want in the quiz.</p>
+    <p class="lede">Terms you'll hear in product meetings, on the factory floor, and in Teams chats and emails. Hide pinyin or English to test yourself; tap a row to peek. Star the ones you want in the quiz.</p>
     <div class="toolbar" id="cats"></div>
     <div class="toolbar">
       <label class="toggle"><input type="checkbox" id="hidePy"> Hide pinyin</label>
@@ -146,6 +150,12 @@ h2:first-child{margin-top:4px}
   <section id="p-phr" role="tabpanel" hidden>
     <p class="lede">Full sentences you can use as-is. Taiwan offices mix polite set phrases with plenty of English acronyms, so these are written the way colleagues actually say them.</p>
     <div id="phrases"></div>
+  </section>
+
+  <!-- MIXED -->
+  <section id="p-mix" role="tabpanel" hidden>
+    <p class="lede">Taiwan tech offices drop English words straight into Chinese sentences. You'll hear these every day in meetings and chats. The English keeps its normal pronunciation; the Chinese around it sets the grammar.</p>
+    <div class="list" id="mixlist"></div>
   </section>
 
   <!-- ROLE -->
@@ -179,6 +189,8 @@ h2:first-child{margin-top:4px}
   <!-- TIPS -->
   <section id="p-tips" role="tabpanel" hidden>
     <div class="tips" id="tipgrid"></div>
+    <h2>Taiwan vs mainland words<small>colleagues at plants in mainland China write Simplified</small></h2>
+    <div class="list" id="twcn"></div>
   </section>
 </div>
 
@@ -246,8 +258,81 @@ const V = [
  ["comm","客戶","kèhù","Customer / client",""],
  ["comm","回饋","huíkuì","Feedback",""],
  ["comm","結案","jié'àn","Close a case / issue",""],
+
+ // 生產製造
+ ["prod","打件","dǎjiàn","SMT placement","Taiwan factory word for putting parts on the board"],
+ ["prod","治具","zhìjù","Fixture / jig","Test fixtures wear out, so check them when one station fails a lot"],
+ ["prod","測試站","cèshì zhàn","Test station",""],
+ ["prod","直通率","zhítōng lǜ","First-pass yield (FPY)","People often just say \"FPY\""],
+ ["prod","燒機","shāojī","Burn-in test","燒機 48 小時 = 48-hour burn-in"],
+ ["prod","組裝","zǔzhuāng","Assembly","系統組裝 = system assembly"],
+ ["prod","重工","chónggōng","Rework",""],
+ ["prod","維修","wéixiū","Repair",""],
+ ["prod","不良分析","bùliáng fēnxī","Failure analysis (FA)","Usually said as \"FA\""],
+ ["prod","料號","liàohào","Part number (P/N)",""],
+ ["prod","替代料","tìdài liào","Alternate part / second source","找替代料 = look for a second source"],
+ ["prod","承認書","chéngrèn shū","Part approval document","The spec sheet both sides sign before a part can be used"],
+ ["prod","備料","bèiliào","Material preparation",""],
+ ["prod","工單","gōngdān","Work order",""],
+ ["prod","排程","páichéng","Production scheduling",""],
+ ["prod","產能","chǎnnéng","Capacity",""],
+ ["prod","產線","chǎnxiàn","Production line","線上 = on the line"],
+ ["prod","稼動率","jiàdòng lǜ","Equipment utilization rate","From Japanese; common in Taiwan factories"],
+ ["prod","首件","shǒujiàn","First article check",""],
+ ["prod","進料檢驗","jìnliào jiǎnyàn","Incoming inspection (IQC)","Usually said as \"IQC\""],
+ ["prod","出貨檢驗","chūhuò jiǎnyàn","Outgoing inspection (OQC)","Usually said as \"OQC\""],
+ ["prod","工程變更","gōngchéng biàngēng","Engineering change (ECN)",""],
+ ["prod","客訴","kèsù","Customer complaint",""],
+ ["prod","退貨","tuìhuò","Return / RMA",""],
+ ["prod","稽核","jīhé","Audit",""],
+ ["prod","製程","zhìchéng","Manufacturing process",""],
+ // 數據與統計
+ ["stat","平均值","píngjūn zhí","Mean / average",""],
+ ["stat","標準差","biāozhǔn chā","Standard deviation",""],
+ ["stat","中位數","zhōngwèi shù","Median",""],
+ ["stat","相關係數","xiāngguān xìshù","Correlation coefficient (r)",""],
+ ["stat","迴歸分析","huíguī fēnxī","Regression analysis",""],
+ ["stat","顯著","xiǎnzhù","Significant","有顯著差異 = significantly different"],
+ ["stat","信賴區間","xìnlài qūjiān","Confidence interval","Mainland says 置信区间"],
+ ["stat","假設檢定","jiǎshè jiǎndìng","Hypothesis test","Mainland says 假设检验"],
+ ["stat","管制圖","guǎnzhì tú","Control chart","Mainland says 控制图"],
+ ["stat","製程能力","zhìchéng nénglì","Process capability (Cpk)",""],
+ ["stat","柏拉圖","bólātú","Pareto chart","Sounds like Plato; it's from Pareto"],
+ ["stat","直方圖","zhífāng tú","Histogram",""],
+ ["stat","盒鬚圖","héxū tú","Boxplot",""],
+ ["stat","卡方檢定","kǎfāng jiǎndìng","Chi-square test",""],
+ ["stat","變異數分析","biànyìshù fēnxī","ANOVA","Mainland says 方差分析"],
+ ["stat","異常","yìcháng","Abnormal / anomaly","異常處理 = handling an abnormality"],
+ ["stat","趨勢","qūshì","Trend",""],
+ // 職場日常
+ ["office","打卡","dǎkǎ","Clock in / out",""],
+ ["office","請假","qǐngjià","Ask for leave","請特休 / 病假 / 事假 = annual / sick / personal leave"],
+ ["office","特休","tèxiū","Annual paid leave","特別休假 in full"],
+ ["office","加班","jiābān","Overtime",""],
+ ["office","補休","bǔxiū","Comp time off","Time off in place of overtime pay"],
+ ["office","午休","wǔxiū","Lunch break","Many Taiwan offices dim the lights for a nap after lunch"],
+ ["office","週報","zhōubào","Weekly report",""],
+ ["office","簡報","jiǎnbào","Presentation / slide deck","In Taiwan, 簡報 means the PPT itself"],
+ ["office","出差","chūchāi","Business trip",""],
+ ["office","分機","fēnjī","Phone extension",""],
+ ["office","訂會議室","dìng huìyì shì","Book a meeting room",""],
+ ["office","尾牙","wěiyá","Year-end company banquet","Usually January, often with a prize draw"],
+ // 口語
+ ["talk","喬","qiáo","Arrange / sort out between people","喬時間 = find a time that works. Very Taiwan."],
+ ["talk","卡關","kǎguān","Stuck / blocked","卡在 RD = waiting on RD"],
+ ["talk","搞定","gǎodìng","Done / sorted",""],
+ ["talk","收到","shōudào","Received / noted","The most common chat reply"],
+ ["talk","了解","liǎojiě","Understood",""],
+ ["talk","沒問題","méi wèntí","No problem",""],
+ ["talk","歹勢","pháinn-sè (台語)","Sorry (casual)","Taiwanese; often typed 拍謝 in chats. Use with peers, not customers."],
+ ["talk","辛苦了","xīnkǔ le","Thanks for your hard work",""],
+ ["talk","麻煩了","máfán le","Thanks for the trouble",""],
+ ["talk","打擾了","dǎrǎo le","Sorry to bother you",""],
+ ["talk","先這樣","xiān zhèyàng","Let's leave it here for now","Common way to end a call"],
+ ["talk","我這邊","wǒ zhèbiān","On my side","我這邊 OK = fine from my side"],
+ ["talk","有空嗎","yǒu kòng ma","Are you free?","現在有空嗎？ before calling someone"],
 ];
-const CATS = {all:["全部","All"],org:["組織","Org & roles"],dev:["開發","Development"],cost:["成本品質","Cost & quality"],comm:["溝通","Communication"]};
+const CATS = {all:["全部","All"],org:["組織","Org & roles"],dev:["開發","Development"],cost:["成本品質","Cost & quality"],comm:["溝通","Communication"],prod:["生產","Factory"],stat:["統計","Data & stats"],office:["職場","Office life"],talk:["口語","Spoken"]};
 
 const P = [
  ["會議中","In meetings",[
@@ -276,6 +361,39 @@ const P = [
   ["我先記下來，晚點回覆您。","Wǒ xiān jì xiàlái, wǎndiǎn huífù nín.","Let me note that down and get back to you later."],
   ["這部分我可以用英文補充說明嗎？","Zhè bùfèn wǒ kěyǐ yòng Yīngwén bǔchōng shuōmíng ma?","May I explain this part in English?"],
  ]],
+
+ ["第一週","Your first week",[
+  ["請問這個問題應該找誰？","Qǐngwèn zhège wèntí yīnggāi zhǎo shéi?","Who should I ask about this?"],
+  ["請問系統帳號要怎麼申請？","Qǐngwèn xìtǒng zhànghào yào zěnme shēnqǐng?","How do I apply for a system account?"],
+  ["我可以旁聽這個會議嗎？","Wǒ kěyǐ pángtīng zhège huìyì ma?","May I sit in on this meeting?"],
+  ["這個縮寫是什麼意思？","Zhège suōxiě shì shénme yìsi?","What does this abbreviation mean?"],
+  ["可以分享一下之前的會議記錄嗎？","Kěyǐ fēnxiǎng yíxià zhīqián de huìyì jìlù ma?","Could you share the earlier meeting minutes?"],
+  ["請問專案資料放在哪裡？","Qǐngwèn zhuān'àn zīliào fàng zài nǎlǐ?","Where are the project files kept?"],
+  ["我還在熟悉中，請多指教。","Wǒ hái zài shúxī zhōng, qǐng duō zhǐjiào.","I'm still learning the ropes. Thanks for your guidance."],
+ ]],
+ ["Teams / LINE 快速回覆","Quick chat replies",[
+  ["收到，謝謝！","Shōudào, xièxie!","Got it, thanks!"],
+  ["了解，我再確認一下。","Liǎojiě, wǒ zài quèrèn yíxià.","Understood, I'll double-check."],
+  ["好的，馬上處理。","Hǎo de, mǎshàng chǔlǐ.","OK, on it."],
+  ["已更新，請參考。","Yǐ gēngxīn, qǐng cānkǎo.","Updated, please take a look."],
+  ["不好意思晚回，……","Bù hǎoyìsi wǎn huí, ……","Sorry for the late reply, …"],
+  ["我目前在開會，晚點回您。","Wǒ mùqián zài kāihuì, wǎndiǎn huí nín.","I'm in a meeting, I'll get back to you later."],
+  ["請問現在方便通話嗎？","Qǐngwèn xiànzài fāngbiàn tōnghuà ma?","Is now a good time for a call?"],
+ ]],
+ ["電話","On the phone",[
+  ["您好，我是產品管理部的○○。","Nín hǎo, wǒ shì chǎnpǐn guǎnlǐ bù de ○○.","Hello, this is ○○ from Product Management."],
+  ["請問○○在嗎？","Qǐngwèn ○○ zài ma?","Is ○○ there, please?"],
+  ["可以請他回電給我嗎？我的分機是……","Kěyǐ qǐng tā huídiàn gěi wǒ ma? Wǒ de fēnjī shì……","Could you ask him to call me back? My extension is…"],
+  ["抱歉，訊號不太好，可以再說一次嗎？","Bàoqiàn, xùnhào bú tài hǎo, kěyǐ zài shuō yí cì ma?","Sorry, the line is bad. Could you say that again?"],
+  ["那我們先這樣，有問題再聯絡。","Nà wǒmen xiān zhèyàng, yǒu wèntí zài liánluò.","Let's leave it there. We'll talk again if anything comes up."],
+ ]],
+ ["數據報告","Presenting data",[
+  ["從數據來看，ST-07 的不良率明顯偏高。","Cóng shùjù lái kàn, ST-07 de bùliáng lǜ míngxiǎn piān gāo.","The data shows ST-07's failure rate is clearly too high."],
+  ["這個差異在統計上是顯著的。","Zhège chāyì zài tǒngjì shàng shì xiǎnzhù de.","This difference is statistically significant."],
+  ["目前樣本數還不夠，建議再多收集一些數據。","Mùqián yàngběn shù hái bú gòu, jiànyì zài duō shōují yìxiē shùjù.","The sample is still too small; I suggest collecting more data."],
+  ["前三大不良原因佔了八成。","Qián sān dà bùliáng yuányīn zhàn le bā chéng.","The top three defect causes make up 80%."],
+  ["良率從 96% 掉到 93%，從 9 月 15 日開始。","Liánglǜ cóng bǎi fēn zhī jiǔshíliù diào dào bǎi fēn zhī jiǔshísān, cóng jiǔ yuè shíwǔ rì kāishǐ.","Yield dropped from 96% to 93%, starting September 15."],
+ ]],
 ];
 
 const D = [
@@ -297,6 +415,11 @@ const TIPS = [
  ["Check your understanding out loud","Paraphrasing back is expected of a PM, and it covers gaps in your listening. Use it after every decision in a meeting.","所以結論是先出樣品，對嗎？","Suǒyǐ jiélùn shì xiān chū yàngpǐn, duì ma?"],
  ["Traditional vs Simplified","Taiwan writes Traditional (繁體). Colleagues at plants in mainland China may send Simplified (简体). Most words match; a few differ, like 專案 / 项目 and 伺服器 / 服务器.","伺服器 = 服务器 · 專案 = 项目","sìfúqì · zhuān'àn / xiàngmù"],
  ["辛苦了 is everywhere","Said when someone finishes a task, leaves for the day, or presents. It's the easiest way to build goodwill with the factory and RD teams.","今天的測試辛苦了！","Jīntiān de cèshì xīnkǔ le!"],
+
+ ["Particles make you sound friendly","Taiwanese speech adds soft particles at the end. 好喔 sounds warmer than a bare 好. 齁 (hō) asks for agreement. 欸 (ei) gets attention. Use them in chat and with peers; leave them out of formal email.","好喔，那我先處理。這樣可以齁？","Hǎo o, nà wǒ xiān chǔlǐ. Zhèyàng kěyǐ hō?"],
+ ["您 or 你?","Use 您 in emails, with managers, customers and anyone you're contacting for the first time. Switch to 你 with peers once you chat regularly.","再麻煩您確認，謝謝。","Zài máfán nín quèrèn, xièxie."],
+ ["A little Taiwanese goes a long way","Some Taiwanese Hokkien words are everyday office Mandarin: 歹勢 (sorry), 喬 (arrange). Using them with peers shows you know local culture.","歹勢，我晚點再跟你喬時間。","pháinn-sè, wǒ wǎndiǎn zài gēn nǐ qiáo shíjiān."],
+ ["Numbers in Taiwan offices","Percent is 百分之…, but people often just say the number: 九十六趴 (96%, from \"percent\"). 八成 means 80%. Dates are month/day: 10/5 = 十月五號.","良率九十六趴，目標是九成七。","Liánglǜ jiǔshíliù pā, mùbiāo shì jiǔ chéng qī."],
 ];
 
 // storage helpers
@@ -359,6 +482,39 @@ document.getElementById("intro").innerHTML=INTRO.map(phrRow).join("");
 
 // tips
 document.getElementById("tipgrid").innerHTML=TIPS.map(t=>`<div class="tip"><h3>${t[0]}</h3><p>${t[1]}</p><div class="ex"><span class="han" style="font-size:17px">${t[2]}</span><span class="py">${t[3]}</span></div></div>`).join("");
+
+// mixed Chinese-English
+const MIX = [
+ ["issue","a problem being tracked","這個 issue 現在誰在 follow？","Zhège issue xiànzài shéi zài follow?","Who's following this issue now?"],
+ ["follow","follow up on","我會再 follow 一下，明天回覆你。","Wǒ huì zài follow yíxià, míngtiān huífù nǐ.","I'll follow up and reply tomorrow."],
+ ["check","check / verify","我 check 一下 spec 再回你。","Wǒ check yíxià spec zài huí nǐ.","I'll check the spec and get back to you."],
+ ["sync","share status","會後我們再 sync 一下。","Huì hòu wǒmen zài sync yíxià.","Let's sync after the meeting."],
+ ["update","give the latest status","有最新進度再 update 給大家。","Yǒu zuìxīn jìndù zài update gěi dàjiā.","I'll update everyone when there's news."],
+ ["delay","be late / slip","PVT 的 schedule 可能會 delay 一週。","PVT de schedule kěnéng huì delay yì zhōu.","The PVT schedule may slip a week."],
+ ["hold","put on hold","這個需求先 hold 住，等客戶確認。","Zhège xūqiú xiān hold zhù, děng kèhù quèrèn.","Hold this requirement until the customer confirms."],
+ ["pending","still open / waiting","目前還有三個 issue pending。","Mùqián hái yǒu sān ge issue pending.","Three issues are still pending."],
+ ["cue","call on / mention someone","開會時可以 cue 我一下。","Kāihuì shí kěyǐ cue wǒ yíxià.","Feel free to call on me in the meeting."],
+ ["loading","workload","最近 loading 有點重。","Zuìjìn loading yǒudiǎn zhòng.","My workload is a bit heavy lately."],
+ ["push","push someone to act","要 push 供應商提早交貨。","Yào push gōngyìngshāng tízǎo jiāohuò.","We need to push the supplier to deliver earlier."],
+ ["own","be responsible for","這個 action item 誰 own？","Zhège action item shéi own?","Who owns this action item?"],
+ ["confirm","confirm","我已經跟 RD confirm 過了。","Wǒ yǐjīng gēn RD confirm guò le.","I've already confirmed with RD."],
+ ["offline","discuss separately","這個我們 offline 再討論。","Zhège wǒmen offline zài tǎolùn.","Let's take this offline."],
+ ["meeting","meeting","我等一下有 meeting，三點後可以嗎？","Wǒ děng yíxià yǒu meeting, sān diǎn hòu kěyǐ ma?","I have a meeting soon. Is after 3 OK?"],
+ ["case","a specific job or customer issue","這個 case 比較急，先處理。","Zhège case bǐjiào jí, xiān chǔlǐ.","This case is more urgent, handle it first."],
+ ["out of spec","outside the specification","這批量測值 out of spec。","Zhè pī liángcè zhí out of spec.","This batch measured out of spec."],
+ ["review","review","明天要跟主管 review 時程。","Míngtiān yào gēn zhǔguǎn review shíchéng.","Tomorrow I'm reviewing the schedule with my manager."],
+ ["double check","check again","麻煩 double check 一下數字。","Máfán double check yíxià shùzì.","Please double-check the numbers."],
+ ["deadline","due date","deadline 是這週五。","Deadline shì zhè zhōu wǔ.","The deadline is this Friday."],
+ ["FYI","for your information","FYI，客戶下週會來訪。","FYI, kèhù xià zhōu huì láifǎng.","FYI, the customer is visiting next week."],
+ ["ASAP","as soon as possible","客戶希望我們 ASAP 回覆。","Kèhù xīwàng wǒmen ASAP huífù.","The customer wants a reply ASAP."],
+ ["support","help / backing","這部分需要 RD support。","Zhè bùfèn xūyào RD support.","This part needs RD support."],
+ ["solution","fix / option","有沒有其他 solution？","Yǒu méiyǒu qítā solution?","Is there another solution?"],
+];
+document.getElementById("mixlist").innerHTML=MIX.map(m=>`<div class="phr"><div style="min-width:0"><div class="mixw"><b>${m[0]}</b> · ${m[1]}</div><div class="han">${m[2].replace(new RegExp(m[0].replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"g"),`<span class="mixen">${m[0]}</span>`)}</div><div class="py">${m[3]}</div><div class="en">${m[4]}</div></div><div class="acts">${spkBtn(m[2])}</div></div>`).join("");
+
+// Taiwan vs mainland words
+const TWCN=[["品質","质量","Quality","In Taiwan, 質量 means mass (physics)"],["資料","数据","Data","In mainland usage, 资料 means documents"],["軟體","软件","Software",""],["硬體","硬件","Hardware",""],["網路","网络","Network / internet",""],["訊息","信息","Message / information",""],["記憶體","内存","Memory (RAM)",""],["硬碟","硬盘","Hard drive",""],["伺服器","服务器","Server",""],["專案","项目","Project",""],["程式","程序","Program / code",""],["預設","默认","Default",""],["介面","接口 / 界面","Interface",""],["影片","视频","Video",""],["列印","打印","Print",""],["螢幕","屏幕","Screen",""],["隨身碟","U盘","USB drive",""],["信賴區間","置信区间","Confidence interval",""],["變異數分析","方差分析","ANOVA",""]];
+document.getElementById("twcn").innerHTML=TWCN.map(r=>`<div class="row"><div class="han">${r[0]}</div><div class="gl"><div class="py">Mainland: ${r[1]}</div><div class="en">${r[2]}</div>${r[3]?`<div class="note">${r[3]}</div>`:""}</div><div class="acts">${spkBtn(r[0])}</div></div>`).join("");
 
 // speak delegation
 document.addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(b)speak(b.dataset.say)});
